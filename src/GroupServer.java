@@ -9,16 +9,22 @@
  *
  */
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 
 public class GroupServer extends Server {
-
+	
 	public static final int SERVER_PORT = 8765;
 	public UserList userList;
+	public GroupList groupList;
     
 	public GroupServer() {
 		super(SERVER_PORT, "ALPHA");
@@ -155,11 +161,11 @@ class AutoSave extends Thread
 					System.err.println("Error: " + e.getMessage());
 					e.printStackTrace(System.err);
 				}
-
-			catch(Exception e)
+			} 
+			catch (Exception e)
 			{
 				System.out.println("Autosave Interrupted");
 			}
-		}while(true);
+		} while(true);
 	}
 }

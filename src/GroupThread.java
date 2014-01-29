@@ -1,10 +1,10 @@
 /* This thread does all the work. It communicates with the client through Envelopes.
  * 
  */
-import java.lang.Thread;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
 
 public class GroupThread extends Thread 
 {
@@ -266,6 +266,11 @@ public class GroupThread extends Thread
 		{
 			return false; //requester does not exist
 		}
+	}
+
+	private void deleteGroup(String string, Token token) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
