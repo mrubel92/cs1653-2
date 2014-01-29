@@ -40,7 +40,9 @@ public class GroupServer extends Server {
 		String userFile = "UserList.bin";
 		Scanner console = new Scanner(System.in);
 		ObjectInputStream userStream;
-		ObjectInputStream groupStream;
+		
+		// TODO
+		ObjectInputStream groupStream;		
 		
 		//This runs a thread that saves the lists on program exit
 		Runtime runtime = Runtime.getRuntime();
