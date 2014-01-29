@@ -8,7 +8,9 @@
  */
 public class Message implements java.io.Serializable
 {
-    /** The text string encoded in this Message object */
+	private static final long serialVersionUID = 3452098893656819551L;
+	
+	/** The text string encoded in this Message object */
     public String theMessage;
 
     /**

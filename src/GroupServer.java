@@ -65,6 +65,8 @@ public class GroupServer extends Server {
 			userList.addUser(username);
 			userList.addGroup(username, "ADMIN");
 			userList.addOwnership(username, "ADMIN");
+			
+			console.close();
 		}
 		catch(IOException e)
 		{
@@ -86,6 +88,7 @@ public class GroupServer extends Server {
 		try
 		{
 			
+			@SuppressWarnings("resource")
 			final ServerSocket serverSock = new ServerSocket(port);
 			
 			Socket sock = null;

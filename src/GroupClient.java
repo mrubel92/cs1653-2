@@ -2,7 +2,6 @@
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.ObjectInputStream;
 
 public class GroupClient extends Client implements GroupClientInterface {
  

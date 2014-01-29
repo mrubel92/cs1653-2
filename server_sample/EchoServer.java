@@ -22,7 +22,8 @@ public class EchoServer
     {
 	try{
 	    // This is basically just listens for new client connections
-	    final ServerSocket serverSock = new ServerSocket(SERVER_PORT);
+	    @SuppressWarnings("resource")
+		final ServerSocket serverSock = new ServerSocket(SERVER_PORT);
 	    
 	    // A simple infinite loop to accept connections
 	    Socket sock = null;

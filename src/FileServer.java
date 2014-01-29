@@ -78,6 +78,7 @@ public class FileServer extends Server {
 		
 		try
 		{			
+			@SuppressWarnings("resource")
 			final ServerSocket serverSock = new ServerSocket(port);
 			System.out.printf("%s up and running\n", this.getClass().getName());
 			
