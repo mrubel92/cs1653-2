@@ -23,6 +23,7 @@ import java.util.Scanner;
 public class GroupServer extends Server {
 	
 	public static final int SERVER_PORT = 8765;
+	public static final int MAX_USERNAME_LENGTH = 16; 
 	public UserList userList;
 	public GroupList groupList;
     
@@ -38,7 +39,6 @@ public class GroupServer extends Server {
 		// Overwrote server.start() because if no user file exists, initial admin account needs to be created
 		
 		String userFile = "UserList.bin";
-		Scanner console = new Scanner(System.in);
 		ObjectInputStream userStream;
 		
 		// TODO
@@ -59,16 +59,14 @@ public class GroupServer extends Server {
 		{
 			System.out.println("UserList File Does Not Exist. Creating UserList...");
 			System.out.println("No users currently exist. Your account will be the administrator.");
-			System.out.print("Enter your username: ");
-			String username = console.next();
-			
+			System.out.print("Enter your username consisting of only letters and numbers (max length = 16):\n");
+			String username = askForValidUsername();
+
 			//Create a new list, add current user to the ADMIN group. They now own the ADMIN group.
 			userList = new UserList();
 			userList.addUser(username);
 			userList.addGroup(username, "ADMIN");
 			userList.addOwnership(username, "ADMIN");
-			
-			console.close();
 		}
 		catch(IOException e)
 		{
@@ -89,7 +87,6 @@ public class GroupServer extends Server {
 		//This block listens for connections and creates threads on new connections
 		try
 		{
-			
 			@SuppressWarnings("resource")
 			final ServerSocket serverSock = new ServerSocket(port);
 			
@@ -109,6 +106,27 @@ public class GroupServer extends Server {
 			e.printStackTrace(System.err);
 		}
 
+	}
+
+	/**
+	 * Asks user for a valid username.
+	 * @return a valid username
+	 */
+	private String askForValidUsername() {
+		Scanner console = new Scanner(System.in);
+		String username = "";
+		while(!console.hasNext("[0-9a-zA-Z]+"))
+		{
+			System.out.println("\nUsername can only have letters and numbers.\nEnter your username (max length = 16):");
+			console.next();
+		}
+		username = console.next();
+		console.close();
+		
+		if(username.length() > MAX_USERNAME_LENGTH)
+			return username.substring(0, MAX_USERNAME_LENGTH);
+		else
+			return username;
 	}
 	
 }
