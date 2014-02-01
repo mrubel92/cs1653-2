@@ -20,20 +20,16 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class GroupServer extends Server {
-	public static final int SERVER_PORT = 8765;
-	private static final int MAX_USERNAME_LENGTH = 16; 
-	private static final String ADMIN = "ADMIN";
-	private static final String ALPHA = "ALPHA";
 	
 	public UserList userList;
 	public GroupList groupList;
     
 	public GroupServer() {
-		super(SERVER_PORT, ALPHA);
+		super(C.SERVER_PORT, C.ALPHA);
 	}
 	
 	public GroupServer(int _port) {
-		super(_port, ALPHA);
+		super(_port, C.ALPHA);
 	}
 	
 	public void start() {
@@ -56,6 +52,7 @@ public class GroupServer extends Server {
 		{
 			@SuppressWarnings("resource")
 			final ServerSocket serverSock = new ServerSocket(port);
+			System.out.println("GROUP SERVER RUNNING AT: " + serverSock.getLocalSocketAddress());
 			
 			Socket sock = null;
 			GroupThread thread = null;
@@ -95,8 +92,8 @@ public class GroupServer extends Server {
 			//Create a new list, add current user to the ADMIN group. They now own the ADMIN group.
 			userList = new UserList();
 			userList.addUser(username);
-			userList.addGroup(username, ADMIN);
-			userList.addOwnership(username, ADMIN);
+			userList.addGroup(username, C.ADMIN);
+			userList.addOwnership(username, C.ADMIN);
 			
 			openGroupFile(username);
 		}
@@ -129,9 +126,9 @@ public class GroupServer extends Server {
 
 			//Create a new list, add current user to the ADMIN group. They now own the ADMIN group.
 			groupList = new GroupList();
-			groupList.addGroup(ADMIN);
-			groupList.addMember(ADMIN, username);
-			groupList.addOwnership(ADMIN, username);
+			groupList.addGroup(C.ADMIN);
+			groupList.addMember(C.ADMIN, username);
+			groupList.addOwnership(C.ADMIN, username);
 		}
 		catch(IOException e)
 		{
@@ -160,8 +157,8 @@ public class GroupServer extends Server {
 		username = console.next();
 		console.close();
 		
-		if(username.length() > MAX_USERNAME_LENGTH)
-			return username.substring(0, MAX_USERNAME_LENGTH);
+		if(username.length() > C.MAX_USERNAME_LENGTH)
+			return username.substring(0, C.MAX_USERNAME_LENGTH);
 		else
 			return username;
 	}

@@ -13,7 +13,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			Envelope message = null, response = null;
 		 		 	
 			//Tell the server to return a token.
-			message = new Envelope("GET");
+			message = new Envelope(C.GET);
 			message.addObject(username); //Add user name string
 			output.writeObject(message);
 		
@@ -21,7 +21,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			response = (Envelope)input.readObject();
 			
 			//Successful response
-			if(response.getMessage().equals("OK"))
+			if(response.getMessage().equals(C.OK))
 			{
 				//If there is a token in the Envelope, return it 
 				ArrayList<Object> temp = null;
@@ -33,7 +33,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 					return token;
 				}
 			}
-			
 			return null;
 		}
 		catch(Exception e)
@@ -51,7 +50,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			{
 				Envelope message = null, response = null;
 				//Tell the server to create a user
-				message = new Envelope("CUSER");
+				message = new Envelope(C.CUSER);
 				message.addObject(username); //Add user name string
 				message.addObject(token); //Add the requester's token
 				output.writeObject(message);
@@ -59,7 +58,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 				response = (Envelope)input.readObject();
 				
 				//If server indicates success, return true
-				if(response.getMessage().equals("OK"))
+				if(response.getMessage().equals(C.OK))
 				{
 					return true;
 				}
@@ -81,7 +80,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 				Envelope message = null, response = null;
 			 
 				//Tell the server to delete a user
-				message = new Envelope("DUSER");
+				message = new Envelope(C.DUSER);
 				message.addObject(username); //Add user name
 				message.addObject(token);  //Add requester's token
 				output.writeObject(message);
@@ -89,7 +88,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 				response = (Envelope)input.readObject();
 				
 				//If server indicates success, return true
-				if(response.getMessage().equals("OK"))
+				if(response.getMessage().equals(C.OK))
 				{
 					return true;
 				}
@@ -110,7 +109,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			{
 				Envelope message = null, response = null;
 				//Tell the server to create a group
-				message = new Envelope("CGROUP");
+				message = new Envelope(C.CGROUP);
 				message.addObject(groupname); //Add the group name string
 				message.addObject(token); //Add the requester's token
 				output.writeObject(message); 
@@ -118,7 +117,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 				response = (Envelope)input.readObject();
 				
 				//If server indicates success, return true
-				if(response.getMessage().equals("OK"))
+				if(response.getMessage().equals(C.OK))
 				{
 					return true;
 				}
@@ -139,14 +138,14 @@ public class GroupClient extends Client implements GroupClientInterface {
 			{
 				Envelope message = null, response = null;
 				//Tell the server to delete a group
-				message = new Envelope("DGROUP");
+				message = new Envelope(C.DGROUP);
 				message.addObject(groupname); //Add group name string
 				message.addObject(token); //Add requester's token
 				output.writeObject(message); 
 			
 				response = (Envelope)input.readObject();
 				//If server indicates success, return true
-				if(response.getMessage().equals("OK"))
+				if(response.getMessage().equals(C.OK))
 				{
 					return true;
 				}
@@ -168,7 +167,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 		 {
 			 Envelope message = null, response = null;
 			 //Tell the server to return the member list
-			 message = new Envelope("LMEMBERS");
+			 message = new Envelope(C.LMEMBERS);
 			 message.addObject(group); //Add group name string
 			 message.addObject(token); //Add requester's token
 			 output.writeObject(message); 
@@ -176,7 +175,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			 response = (Envelope)input.readObject();
 			 
 			 //If server indicates success, return the member list
-			 if(response.getMessage().equals("OK"))
+			 if(response.getMessage().equals(C.OK))
 			 { 
 				return (List<String>)response.getObjContents().get(0); //This cast creates compiler warnings. Sorry.
 			 }
@@ -198,7 +197,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			{
 				Envelope message = null, response = null;
 				//Tell the server to add a user to the group
-				message = new Envelope("AUSERTOGROUP");
+				message = new Envelope(C.AUSERTOGROUP);
 				message.addObject(username); //Add user name string
 				message.addObject(groupname); //Add group name string
 				message.addObject(token); //Add requester's token
@@ -206,7 +205,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			
 				response = (Envelope)input.readObject();
 				//If server indicates success, return true
-				if(response.getMessage().equals("OK"))
+				if(response.getMessage().equals(C.OK))
 				{
 					return true;
 				}
@@ -227,7 +226,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			{
 				Envelope message = null, response = null;
 				//Tell the server to remove a user from the group
-				message = new Envelope("RUSERFROMGROUP");
+				message = new Envelope(C.RUSERFROMGROUP);
 				message.addObject(username); //Add user name string
 				message.addObject(groupname); //Add group name string
 				message.addObject(token); //Add requester's token
@@ -235,7 +234,7 @@ public class GroupClient extends Client implements GroupClientInterface {
 			
 				response = (Envelope)input.readObject();
 				//If server indicates success, return true
-				if(response.getMessage().equals("OK"))
+				if(response.getMessage().equals(C.OK))
 				{
 					return true;
 				}

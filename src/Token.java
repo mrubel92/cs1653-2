@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Token implements UserToken {
-
+	private static final long serialVersionUID = 678708483223677463L;
 	String issuer;
 	String subject;
 	ArrayList<String> usersGroups;
@@ -31,4 +31,8 @@ public class Token implements UserToken {
 		return usersGroups;
 	}
 
+	@Override
+	public String toString() {
+		return "Token [issuer=" + issuer + ", subject=" + subject + ", usersGroups=" + usersGroups + "]";
+	}
 }

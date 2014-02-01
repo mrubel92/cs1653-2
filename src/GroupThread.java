@@ -1,6 +1,7 @@
 /* This thread does all the work. It communicates with the client through Envelopes.
  * 
  */
+import java.io.EOFException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -10,6 +11,7 @@ public class GroupThread extends Thread
 {
 	private final Socket socket;
 	private GroupServer my_gs;
+
 	
 	public GroupThread(Socket _socket, GroupServer _gs)
 	{
@@ -24,7 +26,7 @@ public class GroupThread extends Thread
 		try
 		{
 			//Announces connection and opens object streams
-			System.out.println("*** New connection from " + socket.getInetAddress() + ":" + socket.getPort() + "***");
+			System.out.println("\n*** New connection from " + socket.getInetAddress() + ":" + socket.getPort() + "***");
 			final ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
 			final ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
 			
@@ -33,35 +35,34 @@ public class GroupThread extends Thread
 				Envelope message = (Envelope)input.readObject();
 				System.out.println("Request received: " + message.getMessage());
 				Envelope response;
-				
-				if(message.getMessage().equals("GET"))//Client wants a token
+
+				if(message.getMessage().equals(C.GET)) //Client wants a token
 				{
 					String username = (String)message.getObjContents().get(0); //Get the username
 					if(username == null)
 					{
-						response = new Envelope("FAIL");
+						response = new Envelope(C.FAIL);
 						response.addObject(null);
 						output.writeObject(response);
 					}
 					else
 					{
 						UserToken yourToken = createToken(username); //Create a token
-						
 						//Respond to the client. On error, the client will receive a null token
-						response = new Envelope("OK");
+						response = new Envelope(C.OK);
 						response.addObject(yourToken);
 						output.writeObject(response);
 					}
 				}
-				else if(message.getMessage().equals("CUSER")) //Client wants to create a user
+				else if(message.getMessage().equals(C.CUSER)) //Client wants to create a user
 				{
 					if(message.getObjContents().size() < 2)
 					{
-						response = new Envelope("FAIL");
+						response = new Envelope(C.FAIL);
 					}
 					else
 					{
-						response = new Envelope("FAIL");
+						response = new Envelope(C.FAIL);
 						
 						if(message.getObjContents().get(0) != null)
 						{
@@ -72,7 +73,7 @@ public class GroupThread extends Thread
 								
 								if(createUser(username, yourToken))
 								{
-									response = new Envelope("OK"); //Success
+									response = new Envelope(C.OK); //Success
 								}
 							}
 						}
@@ -80,16 +81,16 @@ public class GroupThread extends Thread
 					
 					output.writeObject(response);
 				}
-				else if(message.getMessage().equals("DUSER")) //Client wants to delete a user
+				else if(message.getMessage().equals(C.DUSER)) //Client wants to delete a user
 				{
 					
 					if(message.getObjContents().size() < 2)
 					{
-						response = new Envelope("FAIL");
+						response = new Envelope(C.FAIL);
 					}
 					else
 					{
-						response = new Envelope("FAIL");
+						response = new Envelope(C.FAIL);
 						
 						if(message.getObjContents().get(0) != null)
 						{
@@ -100,7 +101,7 @@ public class GroupThread extends Thread
 								
 								if(deleteUser(username, yourToken))
 								{
-									response = new Envelope("OK"); //Success
+									response = new Envelope(C.OK); //Success
 								}
 							}
 						}
@@ -108,37 +109,41 @@ public class GroupThread extends Thread
 					
 					output.writeObject(response);
 				}
-				else if(message.getMessage().equals("CGROUP")) //Client wants to create a group
+				else if(message.getMessage().equals(C.CGROUP)) //Client wants to create a group
 				{
 				    /* TODO:  Write this handler */
 				}
-				else if(message.getMessage().equals("DGROUP")) //Client wants to delete a group
+				else if(message.getMessage().equals(C.DGROUP)) //Client wants to delete a group
 				{
 				    /* TODO:  Write this handler */
 				}
-				else if(message.getMessage().equals("LMEMBERS")) //Client wants a list of members in a group
+				else if(message.getMessage().equals(C.LMEMBERS)) //Client wants a list of members in a group
 				{
 				    /* TODO:  Write this handler */
 				}
-				else if(message.getMessage().equals("AUSERTOGROUP")) //Client wants to add user to a group
+				else if(message.getMessage().equals(C.AUSERTOGROUP)) //Client wants to add user to a group
 				{
 				    /* TODO:  Write this handler */
 				}
-				else if(message.getMessage().equals("RUSERFROMGROUP")) //Client wants to remove user from a group
+				else if(message.getMessage().equals(C.RUSERFROMGROUP)) //Client wants to remove user from a group
 				{
 				    /* TODO:  Write this handler */
 				}
-				else if(message.getMessage().equals("DISCONNECT")) //Client wants to disconnect
+				else if(message.getMessage().equals(C.DISCONNECT)) //Client wants to disconnect
 				{
 					socket.close(); //Close the socket
 					proceed = false; //End this communication loop
 				}
 				else
 				{
-					response = new Envelope("FAIL"); //Server does not understand client request
+					response = new Envelope(C.FAIL); //Server does not understand client request
 					output.writeObject(response);
 				}
-			}while(proceed);	
+			} while(proceed);	
+		}
+		catch(EOFException eof)
+		{
+			//Do nothing, the client connected to this thread is done talking
 		}
 		catch(Exception e)
 		{
@@ -175,7 +180,7 @@ public class GroupThread extends Thread
 			//Get the user's groups
 			ArrayList<String> temp = my_gs.userList.getUserGroups(requester);
 			//requester needs to be an administrator
-			if(temp.contains("ADMIN"))
+			if(temp.contains(C.ADMIN))
 			{
 				//Does user already exist?
 				if(my_gs.userList.checkUser(username))
@@ -209,7 +214,7 @@ public class GroupThread extends Thread
 		{
 			ArrayList<String> temp = my_gs.userList.getUserGroups(requester);
 			//requester needs to be an administer
-			if(temp.contains("ADMIN"))
+			if(temp.contains(C.ADMIN))
 			{
 				//Does user exist?
 				if(my_gs.userList.checkUser(username))
