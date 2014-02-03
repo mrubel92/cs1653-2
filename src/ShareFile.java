@@ -30,4 +30,9 @@ public class ShareFile implements java.io.Serializable, Comparable<ShareFile> {
 		else
 			return 1;
 	}
+
+	@Override
+	public String toString() {
+		return "ShareFile [group=" + group + ", path=" + path + ", owner=" + owner + "]";
+	}
 }

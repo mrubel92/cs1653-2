@@ -105,7 +105,7 @@ public class FileClient extends Client implements FileClientInterface {
 
 			// If server indicates success, return the member list
 			if (response.getMessage().equals("OK")) {
-				return (List<String>) response.getObjContents().get(0); // This cast creates compiler warnings. Sorry.
+				return (List<String>) response.getObjContents().get(0);
 			}
 			return null;
 		} catch (Exception e) {
