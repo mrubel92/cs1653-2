@@ -4,8 +4,8 @@ import java.net.Socket;
 
 public abstract class Client {
 
-	/* Protected keyword is like private but subclasses have access to
-	 * Socket and input/output streams
+	/*
+	 * Protected keyword is like private but subclasses have access to Socket and input/output streams
 	 */
 	protected Socket sock;
 	protected ObjectInputStream input;
@@ -17,7 +17,7 @@ public abstract class Client {
 			@SuppressWarnings("resource")
 			Socket socket = new Socket(server, port);
 			output = new ObjectOutputStream(socket.getOutputStream());
-			input = new ObjectInputStream(socket.getInputStream());	
+			input = new ObjectInputStream(socket.getInputStream());
 			return true;
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
@@ -29,21 +29,17 @@ public abstract class Client {
 	public boolean isConnected() {
 		if (sock == null || !sock.isConnected()) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
 
-	public void disconnect()	 {
+	public void disconnect() {
 		if (isConnected()) {
-			try
-			{
+			try {
 				Envelope message = new Envelope("DISCONNECT");
 				output.writeObject(message);
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				System.err.println("Error: " + e.getMessage());
 				e.printStackTrace(System.err);
 			}
