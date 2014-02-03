@@ -9,7 +9,7 @@ public class RunGroupServer {
 				server.start();
 			}
 			catch (NumberFormatException e) {
-				System.out.printf("Enter a valid port number or pass no arguments to use the default port (%d)\n", C.SERVER_PORT);
+				System.out.printf("Enter a valid port number or pass no arguments to use the default port (%d)\n", GroupServer.SERVER_PORT);
 			}
 		}
 		else {

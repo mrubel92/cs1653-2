@@ -21,15 +21,17 @@ import java.util.Scanner;
 
 public class GroupServer extends Server {
 	
+	public static final int SERVER_PORT = 8765;
+	public static final int MAX_USERNAME_LENGTH = 16; 
 	public UserList userList;
 	public GroupList groupList;
     
 	public GroupServer() {
-		super(C.SERVER_PORT, C.ALPHA);
+		super(SERVER_PORT, "ALPHA");
 	}
 	
 	public GroupServer(int _port) {
-		super(_port, C.ALPHA);
+		super(_port, "ALPHA");
 	}
 	
 	public void start() {
@@ -92,8 +94,8 @@ public class GroupServer extends Server {
 			//Create a new list, add current user to the ADMIN group. They now own the ADMIN group.
 			userList = new UserList();
 			userList.addUser(username);
-			userList.addGroup(username, C.ADMIN);
-			userList.addOwnership(username, C.ADMIN);
+			userList.addGroup(username, "ADMIN");
+			userList.addOwnership(username, "ADMIN");
 			
 			openGroupFile(username);
 		}
@@ -126,9 +128,9 @@ public class GroupServer extends Server {
 
 			//Create a new list, add current user to the ADMIN group. They now own the ADMIN group.
 			groupList = new GroupList();
-			groupList.addGroup(C.ADMIN);
-			groupList.addMember(C.ADMIN, username);
-			groupList.addOwnership(C.ADMIN, username);
+			groupList.addGroup("ADMIN");
+			groupList.addMember("ADMIN", username);
+			groupList.addOwnership("ADMIN", username);
 		}
 		catch(IOException e)
 		{
@@ -157,8 +159,8 @@ public class GroupServer extends Server {
 		username = console.next();
 		console.close();
 		
-		if(username.length() > C.MAX_USERNAME_LENGTH)
-			return username.substring(0, C.MAX_USERNAME_LENGTH);
+		if(username.length() > MAX_USERNAME_LENGTH)
+			return username.substring(0, MAX_USERNAME_LENGTH);
 		else
 			return username;
 	}

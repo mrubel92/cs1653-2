@@ -39,7 +39,7 @@ public abstract class Client {
 		if (isConnected()) {
 			try
 			{
-				Envelope message = new Envelope(C.DISCONNECT);
+				Envelope message = new Envelope("DISCONNECT");
 				output.writeObject(message);
 			}
 			catch(Exception e)
