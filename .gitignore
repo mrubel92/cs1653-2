@@ -3,3 +3,5 @@
 .project
 *.class
 *.bin
+src/shared_files
+src/*.txt

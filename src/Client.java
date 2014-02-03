@@ -4,7 +4,7 @@ import java.net.Socket;
 
 public abstract class Client {
 
-	/* Protected keyword is like private but subclasses have access
+	/* Protected keyword is like private but subclasses have access to
 	 * Socket and input/output streams
 	 */
 	protected Socket sock;
@@ -12,7 +12,7 @@ public abstract class Client {
 	protected ObjectOutputStream output;
 
 	public boolean connect(final String server, final int port) {
-		System.out.println("Attempting to connect to: " + server + ":" + port);
+		System.out.println("\nAttempting to connect to: " + server + ":" + port);
 		try {
 			@SuppressWarnings("resource")
 			Socket socket = new Socket(server, port);

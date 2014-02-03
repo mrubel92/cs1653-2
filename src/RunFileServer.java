@@ -9,7 +9,7 @@ public class RunFileServer {
 				server.start();
 			}
 			catch (NumberFormatException e) {
-				System.out.printf("Enter a valid port number or pass no arguments to use the default port (%d)\n", FileServer.SERVER_PORT);
+				System.out.printf("Enter a valid port number or pass no arguments to use the default port (%d)\n", FileServer.FILE_SERVER_PORT);
 			}
 		}
 		else {
@@ -17,5 +17,4 @@ public class RunFileServer {
 			server.start();
 		}
 	}
-
 }

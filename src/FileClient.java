@@ -16,18 +16,20 @@ public class FileClient extends Client implements FileClientInterface {
 		else {
 			remotePath = filename;
 		}
-		Envelope env = new Envelope("DELETEF"); //Success
-	    env.addObject(remotePath);
-	    env.addObject(token);
+		
+		Envelope message = null, response = null;
+		message = new Envelope("DELETEF"); //Success
+		message.addObject(remotePath);
+		message.addObject(token);
 	    try {
-			output.writeObject(env);
-		    env = (Envelope)input.readObject();
+			output.writeObject(message);
+			response = (Envelope)input.readObject();
 		    
-			if (env.getMessage().compareTo("OK")==0) {
+			if (response.getMessage().compareTo("OK")==0) {
 				System.out.printf("File %s deleted successfully\n", filename);				
 			}
 			else {
-				System.out.printf("Error deleting file %s (%s)\n", filename, env.getMessage());
+				System.out.printf("Error deleting file %s (%s)\n", filename, response.getMessage());
 				return false;
 			}			
 		} catch (IOException e1) {
@@ -35,7 +37,6 @@ public class FileClient extends Client implements FileClientInterface {
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
-	    	
 		return true;
 	}
 
@@ -45,37 +46,37 @@ public class FileClient extends Client implements FileClientInterface {
 				}
 		
 				File file = new File(destFile);
-			    try {
-			    				
-				
+			    try {			
+			    	Envelope message = null, response = null;
+			    	
 				    if (!file.exists()) {
 				    	file.createNewFile();
 					    FileOutputStream fos = new FileOutputStream(file);
 					    
-					    Envelope env = new Envelope("DOWNLOADF"); //Success
-					    env.addObject(sourceFile);
-					    env.addObject(token);
-					    output.writeObject(env); 
+					    message = new Envelope("DOWNLOADF"); //Success
+					    message.addObject(sourceFile);
+					    message.addObject(token);
+					    output.writeObject(message); 
 					
-					    env = (Envelope)input.readObject();
+					    response = (Envelope)input.readObject();
 					    
-						while (env.getMessage().compareTo("CHUNK")==0) { 
-								fos.write((byte[])env.getObjContents().get(0), 0, (Integer)env.getObjContents().get(1));
+						while (response.getMessage().compareTo("CHUNK")==0) { 
+								fos.write((byte[])response.getObjContents().get(0), 0, (Integer)response.getObjContents().get(1));
 								System.out.printf(".");
-								env = new Envelope("DOWNLOADF"); //Success
-								output.writeObject(env);
-								env = (Envelope)input.readObject();									
+								message = new Envelope("DOWNLOADF"); //Success
+								output.writeObject(message);
+								response = (Envelope)input.readObject();									
 						}										
 						fos.close();
 						
-					    if(env.getMessage().compareTo("EOF")==0) {
+					    if(response.getMessage().compareTo("EOF")==0) {
 					    	 fos.close();
 								System.out.printf("\nTransfer successful file %s\n", sourceFile);
-								env = new Envelope("OK"); //Success
-								output.writeObject(env);
+								message = new Envelope("OK"); //Success
+								output.writeObject(message);
 						}
 						else {
-								System.out.printf("Error reading file %s (%s)\n", sourceFile, env.getMessage());
+								System.out.printf("Error reading file %s (%s)\n", sourceFile, response.getMessage());
 								file.delete();
 								return false;								
 						}
@@ -85,149 +86,126 @@ public class FileClient extends Client implements FileClientInterface {
 						System.out.printf("Error couldn't create file %s\n", destFile);
 						return false;
 				    }
-								
-			
 			    } catch (IOException e1) {
-			    	
 			    	System.out.printf("Error couldn't create file %s\n", destFile);
-			    	return false;
-			    
-					
+			    	return false;	
 				}
 			    catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
-				 return true;
+				return true;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<String> listFiles(UserToken token) {
 		 try
 		 {
-			 Envelope message = null, e = null;
+			 Envelope message = null, response = null;
 			 //Tell the server to return the member list
 			 message = new Envelope("LFILES");
 			 message.addObject(token); //Add requester's token
 			 output.writeObject(message); 
 			 
-			 e = (Envelope)input.readObject();
+			 response = (Envelope)input.readObject();
 			 
 			 //If server indicates success, return the member list
-			 if(e.getMessage().equals("OK"))
+			 if(response.getMessage().equals("OK"))
 			 { 
-				return (List<String>)e.getObjContents().get(0); //This cast creates compiler warnings. Sorry.
+				return (List<String>)response.getObjContents().get(0); //This cast creates compiler warnings. Sorry.
 			 }
-				
-			 return null;
-			 
+			 return null; 
 		 }
 		 catch(Exception e)
-			{
-				System.err.println("Error: " + e.getMessage());
-				e.printStackTrace(System.err);
-				return null;
-			}
+		 {
+			System.err.println("Error: " + e.getMessage());
+			e.printStackTrace(System.err);
+			return null;
+		 }
 	}
 
-	public boolean upload(String sourceFile, String destFile, String group,
-			UserToken token) {
+	public boolean upload(String sourceFile,
+						  String destFile,
+						  String group,
+						  UserToken token) {
 			
 		if (destFile.charAt(0)!='/') {
 			 destFile = "/" + destFile;
-		 }
+		}
 		
 		try
-		 {
-			 
-			 Envelope message = null, env = null;
-			 //Tell the server to return the member list
+		{
+			 Envelope message = null, response = null;
 			 message = new Envelope("UPLOADF");
 			 message.addObject(destFile);
 			 message.addObject(group);
 			 message.addObject(token); //Add requester's token
 			 output.writeObject(message);
-			
 			 
 			 FileInputStream fis = new FileInputStream(sourceFile);
 			 
-			 env = (Envelope)input.readObject();
-			 
-			 //If server indicates success, return the member list
-			 if(env.getMessage().equals("READY"))
+			 response = (Envelope)input.readObject();
+
+			 if(response.getMessage().equals("READY"))
 			 { 
 				System.out.printf("Meta data upload successful\n");
-				
-			}
+			 }
 			 else {
-				
-				 System.out.printf("Upload failed: %s\n", env.getMessage());
+				 System.out.printf("Upload failed: %s\n", response.getMessage());
 				 fis.close();
 				 return false;
 			 }
-			 
 		 	
 			 do {
-				 byte[] buf = new byte[4096];
-				 	if (env.getMessage().compareTo("READY")!=0) {
-				 		System.out.printf("Server error: %s\n", env.getMessage());
-				 		fis.close();
-				 		return false;
-				 	}
-				 	message = new Envelope("CHUNK");
-					int n = fis.read(buf); //can throw an IOException
-					if (n > 0) {
-						System.out.printf(".");
-					} else if (n < 0) {
-						System.out.println("Read error");
-						fis.close();
-						return false;
-					}
-					
-					message.addObject(buf);
-					message.addObject(new Integer(n));
-					
-					output.writeObject(message);
-					
-					
-					env = (Envelope)input.readObject();
-					
-										
-			 }
-			 while (fis.available()>0);		
-			 fis.close();
-					 
-			 //If server indicates success, return the member list
-			 if(env.getMessage().compareTo("READY")==0)
-			 { 
+				byte[] buf = new byte[4096];
+			 	if (response.getMessage().compareTo("READY")!=0) {
+			 		System.out.printf("Server error: %s\n", response.getMessage());
+			 		fis.close();
+			 		return false;
+			 	}
+			 	message = new Envelope("CHUNK");
+				int n = fis.read(buf); //can throw an IOException
+				if (n > 0) {
+					System.out.printf(".");
+				} else if (n < 0) {
+					System.out.println("Read error");
+					fis.close();
+					return false;
+				}
 				
+				message.addObject(buf);
+				message.addObject(new Integer(n));
+				
+				output.writeObject(message);
+				response = (Envelope)input.readObject();
+				
+			 } while (fis.available()>0);		
+			 fis.close();
+
+			 if(response.getMessage().compareTo("READY")==0)
+			 { 
 				message = new Envelope("EOF");
 				output.writeObject(message);
 				
-				env = (Envelope)input.readObject();
-				if(env.getMessage().compareTo("OK")==0) {
+				response = (Envelope)input.readObject();
+				if(response.getMessage().compareTo("OK")==0) {
 					System.out.printf("\nFile data upload successful\n");
 				}
 				else {
-					
-					 System.out.printf("\nUpload failed: %s\n", env.getMessage());
+					 System.out.printf("\nUpload failed: %s\n", response.getMessage());
 					 return false;
 				 }
-				
 			}
 			 else {
-				
-				 System.out.printf("Upload failed: %s\n", env.getMessage());
+				 System.out.printf("Upload failed: %s\n", response.getMessage());
 				 return false;
 			 }
-			 
-		 }catch(Exception e1)
-			{
+		 } catch(Exception e1)
+		 {
 				System.err.println("Error: " + e1.getMessage());
 				e1.printStackTrace(System.err);
 				return false;
-				}
+		 }
 		 return true;
 	}
-
 }
 

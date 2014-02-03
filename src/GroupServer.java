@@ -11,27 +11,25 @@
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class GroupServer extends Server {
 	
-	public static final int SERVER_PORT = 8765;
+	public static final int GROUP_SERVER_PORT = 8765;
 	public static final int MAX_USERNAME_LENGTH = 16; 
 	public UserList userList;
 	public GroupList groupList;
     
 	public GroupServer() {
-		super(SERVER_PORT, "ALPHA");
+		super(GROUP_SERVER_PORT, "GROUP_SERVER");
 	}
 	
 	public GroupServer(int _port) {
-		super(_port, "ALPHA");
+		super(_port, "GROUP_SERVER");
 	}
 	
 	public void start() {
@@ -72,7 +70,6 @@ public class GroupServer extends Server {
 			e.printStackTrace(System.err);
 		}
 	}
-
 
 	private void openUserAndGroupFile() {
 		String userFile = "UserList.bin";
@@ -163,79 +160,5 @@ public class GroupServer extends Server {
 			return username.substring(0, MAX_USERNAME_LENGTH);
 		else
 			return username;
-	}
-	
-}
-
-/**
- * Gets rid of duplicate code for AutoSave and ShutDownListener.
- */
-class Saver
-{
-	public GroupServer my_gs;
-	
-	public Saver (GroupServer _gs) {
-		my_gs = _gs;
-	}
-	
-	public void run()
-	{
-		ObjectOutputStream outStreamUsers;
-		ObjectOutputStream outStreamGroups;
-		try
-		{
-			outStreamUsers = new ObjectOutputStream(new FileOutputStream("UserList.bin"));
-			outStreamUsers.writeObject(my_gs.userList);
-			
-			outStreamGroups = new ObjectOutputStream(new FileOutputStream("GroupList.bin"));
-			outStreamGroups.writeObject(my_gs.groupList);
-		}
-		catch(Exception e)
-		{
-			System.err.println("Error: " + e.getMessage());
-			e.printStackTrace(System.err);
-		}
-	}
-}
-
-//This thread saves the user and group list
-class ShutDownListener extends Thread
-{
-	public Saver saver;
-	
-	public ShutDownListener (GroupServer _gs) {
-		saver = new Saver(_gs);
-	}
-	
-	public void run()
-	{
-		System.out.println("Shutting down server");
-		saver.run();
-	}
-}
-
-class AutoSave extends Thread
-{
-	public Saver saver;
-	
-	public AutoSave (GroupServer _gs) {
-		saver = new Saver(_gs);
-	}
-	
-	public void run()
-	{
-		do
-		{
-			try
-			{
-				Thread.sleep(300000); //Save group and user lists every 5 minutes
-				System.out.println("Autosave group and user lists...");
-				saver.run();
-			} 
-			catch (Exception e)
-			{
-				System.out.println("Autosave Interrupted");
-			}
-		} while(true);
 	}
 }

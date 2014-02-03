@@ -22,11 +22,10 @@ public class GroupThread extends Thread
 	public void run()
 	{
 		boolean proceed = true;
-
 		try
 		{
 			//Announces connection and opens object streams
-			System.out.println("\n*** New connection from " + socket.getInetAddress() + ":" + socket.getPort() + "***");
+			System.out.println("\n*** New connection from " + socket.getInetAddress() + ":" + socket.getPort() + " ***");
 			final ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
 			final ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
 			
@@ -78,12 +77,10 @@ public class GroupThread extends Thread
 							}
 						}
 					}
-					
 					output.writeObject(response);
 				}
 				else if(message.getMessage().equals("DUSER")) //Client wants to delete a user
 				{
-					
 					if(message.getObjContents().size() < 2)
 					{
 						response = new Envelope("FAIL");
@@ -106,7 +103,6 @@ public class GroupThread extends Thread
 							}
 						}
 					}
-					
 					output.writeObject(response);
 				}
 				else if(message.getMessage().equals("CGROUP")) //Client wants to create a group
@@ -167,7 +163,6 @@ public class GroupThread extends Thread
 			return null;
 		}
 	}
-	
 	
 	//Method to create a user
 	private boolean createUser(String username, UserToken yourToken)
@@ -253,13 +248,11 @@ public class GroupThread extends Thread
 					
 					//Delete the user from the user list
 					my_gs.userList.deleteUser(username);
-					
 					return true;	
 				}
 				else
 				{
 					return false; //User does not exist
-					
 				}
 			}
 			else
@@ -275,7 +268,5 @@ public class GroupThread extends Thread
 
 	private void deleteGroup(String string, Token token) {
 		// TODO Auto-generated method stub
-		
 	}
-	
 }

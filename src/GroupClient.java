@@ -41,7 +41,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 			e.printStackTrace(System.err);
 			return null;
 		}
-		
 	 }
 	 
 	 public boolean createUser(String username, UserToken token)
@@ -62,7 +61,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 				{
 					return true;
 				}
-				
 				return false;
 			}
 			catch(Exception e)
@@ -92,7 +90,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 				{
 					return true;
 				}
-				
 				return false;
 			}
 			catch(Exception e)
@@ -121,7 +118,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 				{
 					return true;
 				}
-				
 				return false;
 			}
 			catch(Exception e)
@@ -149,7 +145,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 				{
 					return true;
 				}
-				
 				return false;
 			}
 			catch(Exception e)
@@ -178,10 +173,8 @@ public class GroupClient extends Client implements GroupClientInterface {
 			 if(response.getMessage().equals("OK"))
 			 { 
 				return (List<String>)response.getObjContents().get(0); //This cast creates compiler warnings. Sorry.
-			 }
-				
+			 }	
 			 return null;
-			 
 		 }
 		 catch(Exception e)
 			{
@@ -209,7 +202,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 				{
 					return true;
 				}
-				
 				return false;
 			}
 			catch(Exception e)
@@ -238,7 +230,6 @@ public class GroupClient extends Client implements GroupClientInterface {
 				{
 					return true;
 				}
-				
 				return false;
 			}
 			catch(Exception e)
@@ -248,5 +239,4 @@ public class GroupClient extends Client implements GroupClientInterface {
 				return false;
 			}
 	 }
-
 }
