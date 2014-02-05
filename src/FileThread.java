@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.*;
 
 public class FileThread extends Thread
 {
@@ -34,7 +35,7 @@ public class FileThread extends Thread
 				// Handler to list files that this user is allowed to see
 				if(e.getMessage().equals("LFILES"))
 				{
-					if(e.getObjContents.size()<1)
+					if(e.getObjContents().size()<1)
 					{
 						response = new Envelope("FAIL-BADCONTENTS");
 					}
@@ -42,18 +43,18 @@ public class FileThread extends Thread
 					{
 						if(e.getObjContents().get(0) == null)
 						{
-							response = new Envelope("FAIL-BADTOKEN")
+							response = new Envelope("FAIL-BADTOKEN");
 						}
 						else
 						{
 							String group;
-							List<String> userFiles = new List();
+							List<String> userFiles = new ArrayList<String>();
 						    ArrayList<Object> objList = e.getObjContents();
-						    UserToken yourToken = objList.get(0);
+						    UserToken yourToken = (UserToken)objList.get(0);
 						    //List groups user is in
 						    List<String> userGroups = yourToken.getGroups();
 						    //get list of all files
-						    ArrayList<ShareFile>allFiles = FileList.getFiles();
+						    ArrayList<ShareFile>allFiles = FileServer.fileList.getFiles();
 						    //look through all files to see which are in the appropriate group
 						    for(ShareFile currFile:allFiles)
 						    {
@@ -61,7 +62,7 @@ public class FileThread extends Thread
 						    	//determine if usertoken is associated with the group that the file is in
 						    	if(yourToken.getGroups().contains(group))
 						    	{
-						    		userFiles.add(currFile);
+						    		userFiles.add(currFile.getPath());
 						    	}
 						    }
 						    response = new Envelope("OK");
