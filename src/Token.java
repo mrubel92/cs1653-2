@@ -6,7 +6,7 @@ public class Token implements UserToken {
 	String issuer;
 	String subject;
 	ArrayList<String> usersGroups;
-	
+
 	public Token(String name, String username, ArrayList<String> userGroups) {
 		issuer = name;
 		subject = username;
