@@ -44,6 +44,7 @@ public class GroupThread extends Thread {
 						response.addObject(yourToken);
 						output.writeObject(response);
 					}
+					System.out.println("GET response: " + response.getMessage());
 				} else if (message.getMessage().equals("CUSER")) // Client wants to create a user
 				{
 					if (message.getObjContents().size() < 2) {
@@ -63,6 +64,7 @@ public class GroupThread extends Thread {
 						}
 					}
 					output.writeObject(response);
+					System.out.println("CUSER response: " + response.getMessage());
 				} else if (message.getMessage().equals("DUSER")) // Client wants to delete a user
 				{
 					if (message.getObjContents().size() < 2) {
@@ -82,21 +84,37 @@ public class GroupThread extends Thread {
 						}
 					}
 					output.writeObject(response);
+					System.out.println("DUSER response: " + response.getMessage());
 				} else if (message.getMessage().equals("CGROUP")) // Client wants to create a group
 				{
 					/* TODO: Write this handler */
+					response = new Envelope("OK");
+					output.writeObject(response);
+					System.out.println("CGROUP response: " + response.getMessage());
 				} else if (message.getMessage().equals("DGROUP")) // Client wants to delete a group
 				{
 					/* TODO: Write this handler */
+					response = new Envelope("OK");
+					output.writeObject(response);
+					System.out.println("DGROUP response: " + response.getMessage());
 				} else if (message.getMessage().equals("LMEMBERS")) // Client wants a list of members in a group
 				{
 					/* TODO: Write this handler */
+					response = new Envelope("OK");
+					output.writeObject(response);
+					System.out.println("LMEMBERS response: " + response.getMessage());
 				} else if (message.getMessage().equals("AUSERTOGROUP")) // Client wants to add user to a group
 				{
 					/* TODO: Write this handler */
+					response = new Envelope("OK");
+					output.writeObject(response);
+					System.out.println("AUSERTOGROUP response: " + response.getMessage());
 				} else if (message.getMessage().equals("RUSERFROMGROUP")) // Client wants to remove user from a group
 				{
 					/* TODO: Write this handler */
+					response = new Envelope("OK");
+					output.writeObject(response);
+					System.out.println("RUSERTOGROUP response: " + response.getMessage());
 				} else if (message.getMessage().equals("DISCONNECT")) // Client wants to disconnect
 				{
 					socket.close(); // Close the socket
