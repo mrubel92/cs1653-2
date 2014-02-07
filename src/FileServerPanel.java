@@ -1,6 +1,5 @@
 import javax.swing.JPanel;
 
-
 public class FileServerPanel extends JPanel {
 
 	public FileServerPanel(GroupClient gclient, UserToken userToken) {

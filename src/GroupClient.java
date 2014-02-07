@@ -13,11 +13,12 @@ public class GroupClient extends Client implements GroupClientInterface {
 			// Tell the server to return a token.
 			message = new Envelope("GET");
 			message.addObject(username); // Add user name string
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			// Get the response from the server
 			response = (Envelope) input.readObject();
-
+			System.out.println("Message received from Group Server: " + response.toString());
 			// Successful response
 			if (response.getMessage().equals("OK")) {
 				// If there is a token in the Envelope, return it
@@ -44,10 +45,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message = new Envelope("CUSER");
 			message.addObject(username); // Add user name string
 			message.addObject(token); // Add the requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
-
+			System.out.println("Message received from Group Server: " + response.toString());
 			// If server indicates success, return true
 			if (response.getMessage().equals("OK")) {
 				return true;
@@ -68,10 +70,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message = new Envelope("DUSER");
 			message.addObject(username); // Add user name
 			message.addObject(token); // Add requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
-
+			System.out.println("Message received from Group Server: " + response.toString());
 			// If server indicates success, return true
 			if (response.getMessage().equals("OK")) {
 				return true;
@@ -91,10 +94,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message = new Envelope("CGROUP");
 			message.addObject(groupname); // Add the group name string
 			message.addObject(token); // Add the requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
-
+			System.out.println("Message received from Group Server: " + response.toString());
 			// If server indicates success, return true
 			if (response.getMessage().equals("OK")) {
 				return true;
@@ -114,9 +118,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message = new Envelope("DGROUP");
 			message.addObject(groupname); // Add group name string
 			message.addObject(token); // Add requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
+			System.out.println("Message received from Group Server: " + response.toString());
 			// If server indicates success, return true
 			if (response.getMessage().equals("OK")) {
 				return true;
@@ -137,9 +143,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message = new Envelope("LMEMBERS");
 			message.addObject(group); // Add group name string
 			message.addObject(token); // Add requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
+			System.out.println("Message received from Group Server: " + response.toString());
 
 			// If server indicates success, return the member list
 			if (response.getMessage().equals("OK")) {
@@ -161,9 +169,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message.addObject(username); // Add user name string
 			message.addObject(groupname); // Add group name string
 			message.addObject(token); // Add requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
+			System.out.println("Message received from Group Server: " + response.toString());
 			// If server indicates success, return true
 			if (response.getMessage().equals("OK")) {
 				return true;
@@ -184,9 +194,11 @@ public class GroupClient extends Client implements GroupClientInterface {
 			message.addObject(username); // Add user name string
 			message.addObject(groupname); // Add group name string
 			message.addObject(token); // Add requester's token
+			System.out.println("Message sent to Group Server: " + message.toString());
 			output.writeObject(message);
 
 			response = (Envelope) input.readObject();
+			System.out.println("Message received from Group Server: " + response.toString());
 			// If server indicates success, return true
 			if (response.getMessage().equals("OK")) {
 				return true;
