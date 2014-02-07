@@ -180,7 +180,7 @@ public class GroupPanel extends JPanel {
 				} else {
 					String removeUserName = memberListModel.get(memberIndex).toString();
 					String selectedGroup = groupListModel.get(groupIndex).toString();
-					if (removeUserName != userToken.getSubject()) {
+					if (!removeUserName.equals(userToken.getSubject())) {
 						int reply = JOptionPane.showConfirmDialog(contentPane, "Really remove user: " + removeUserName,
 								"WARNING", JOptionPane.YES_NO_OPTION);
 						if (reply == JOptionPane.YES_OPTION) {
@@ -190,7 +190,8 @@ public class GroupPanel extends JPanel {
 								JOptionPane.showMessageDialog(contentPane, "Failed to remove: " + removeUserName
 										+ " from " + selectedGroup + "!");
 						}
-					}
+					} else
+						JOptionPane.showMessageDialog(contentPane, "You can't delete yourself you idiot");
 				}
 				return;
 			}
@@ -237,7 +238,8 @@ public class GroupPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String deleteUserName = RunClient.askForValidInput("Enter user's name to delete", contentPane);
 				if (deleteUserName != null) {
-					if (deleteUserName != userToken.getSubject()) {
+					if (!deleteUserName.equals(userToken.getSubject())) {
+						System.out.println("DELETE MYSELF WTF: " + deleteUserName + " : " + userToken.getSubject());
 						int reply = JOptionPane.showConfirmDialog(contentPane, "Really delete user: " + deleteUserName,
 								"WARNING", JOptionPane.YES_NO_OPTION);
 						if (reply == JOptionPane.YES_OPTION) {
@@ -248,7 +250,8 @@ public class GroupPanel extends JPanel {
 								JOptionPane.showMessageDialog(contentPane, "Failed to delete user: " + deleteUserName
 										+ "!");
 						}
-					}
+					} else
+						JOptionPane.showMessageDialog(contentPane, "You can't delete yourself you idiot");
 				}
 				return;
 			}
@@ -272,7 +275,7 @@ public class GroupPanel extends JPanel {
 				int groupIndex = groupList.getSelectedIndex();
 				if (groupIndex != -1) {
 					String selectedGroup = groupListModel.get(groupIndex).toString();
-					if (selectedGroup != lastListed) {
+					if (!selectedGroup.equals(lastListed)) {
 						lastListed = selectedGroup;
 						List<String> members = gclient.listMembers(selectedGroup, userToken);
 						if (members == null)
