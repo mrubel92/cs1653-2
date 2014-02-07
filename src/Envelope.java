@@ -9,6 +9,11 @@ public class Envelope implements java.io.Serializable {
 		msg = text;
 	}
 
+	@Override
+	public String toString() {
+		return "Envelope [msg=" + msg + ", objContents=" + objContents + "]";
+	}
+
 	public String getMessage() {
 		return msg;
 	}

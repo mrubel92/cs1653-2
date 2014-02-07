@@ -23,6 +23,7 @@ public class GroupServer extends Server {
 	public static final int MAX_USERNAME_LENGTH = 16;
 	public UserList userList;
 	public GroupList groupList;
+	String firstUser;
 
 	public GroupServer() {
 		super(GROUP_SERVER_PORT, "GROUP_SERVER");
@@ -40,7 +41,8 @@ public class GroupServer extends Server {
 		runtime.addShutdownHook(new ShutDownListener(this));
 
 		// Try and open user and group file
-		openUserAndGroupFile();
+		openUserFile();
+		openGroupFile();
 
 		// Autosave Daemon. Saves lists every 5 minutes
 		AutoSave aSave = new AutoSave(this);
@@ -67,7 +69,7 @@ public class GroupServer extends Server {
 		}
 	}
 
-	private void openUserAndGroupFile() {
+	private void openUserFile() {
 		String userFile = "UserList.bin";
 		ObjectInputStream userStream;
 
@@ -87,7 +89,7 @@ public class GroupServer extends Server {
 			userList.addGroup(username, "ADMIN");
 			userList.addOwnership(username, "ADMIN");
 
-			openGroupFile(username);
+			firstUser = username;
 		} catch (IOException e) {
 			System.out.println("Error reading from UserList file");
 			System.exit(-1);
@@ -97,7 +99,7 @@ public class GroupServer extends Server {
 		}
 	}
 
-	private void openGroupFile(String username) {
+	private void openGroupFile() {
 		String groupFile = "GroupList.bin";
 		ObjectInputStream groupStream;
 
@@ -112,8 +114,8 @@ public class GroupServer extends Server {
 			// Create a new list, add current user to the ADMIN group. They now own the ADMIN group.
 			groupList = new GroupList();
 			groupList.addGroup("ADMIN");
-			groupList.addMember("ADMIN", username);
-			groupList.addOwnership("ADMIN", username);
+			groupList.addMember("ADMIN", firstUser);
+			groupList.addOwnership("ADMIN", firstUser);
 		} catch (IOException e) {
 			System.out.println("Error reading from GroupList file");
 			System.exit(-1);
@@ -136,7 +138,7 @@ public class GroupServer extends Server {
 					.println("\nUsername can only have letters, numbers, and underscores.\nEnter your username (max length = 16):");
 			console.next();
 		}
-		username = console.next();
+		username = console.next().toUpperCase();
 		console.close();
 
 		if (username.length() > MAX_USERNAME_LENGTH)
