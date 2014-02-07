@@ -153,47 +153,21 @@ public class GroupThread extends Thread {
 					}
 					else
 					{
-						if(message.getObjContents().get(0) == null)
+						String username = (String) message.getObjContents().get(0);
+						String groupname = (String) message.getObjContents().get(1);
+						UserToken yourToken = (UserToken) message.getObjContents().get(2);
+						
+						boolean success = addUserToGroup(username,groupname,yourToken);
+						if(success)
 						{
-							response = new Envelope("FAIL-BADUSERNAME");
-						}
-						if(message.getObjContents().get(1) == null)
-						{
-							response = new Envelope("FAIL-BADGROUPNAME");
-						}
-						if(message.getObjContents().get(2) == null)
-						{
-							response = new Envelope("FAIL-BADTOKEN");
+							response = new Envelope("OK");
 						}
 						else
 						{
-							String username = (String) message.getObjContents().get(0);
-							String groupname = (String) message.getObjContents().get(1);
-							UserToken yourToken = (UserToken) message.getObjContents().get(2);
-							
-							//check group ownership
-							ArrayList<String> groupOwners = my_gs.groupList.getGroupOwnership(groupname);
-							String adder = yourToken.getSubject();
-							boolean check = false;
-							for(String owner: groupOwners)
-							{
-								if(owner == adder)
-									check = true;
-							}
-							//if not owner send back error
-							if(!check)
-							{
-								response = new Envelope("FAIL-NOTGROUPOWNER");
-							}
-							//add member and send back OK
-							else
-							{
-								my_gs.groupList.addMember(groupname, username);
-								response = new Envelope("OK");
-								output.writeObject(response);
-								System.out.println("AUSERTOGROUP response: " + response.getMessage());
-							}
+							response = new Envelope("FAIL");
 						}
+						output.writeObject(response);
+						System.out.println("RUSERTOGROUP response: " + response.getMessage());
 					}
 				} else if (message.getMessage().equals("RUSERFROMGROUP")) // Client wants to remove user from a group
 				{
@@ -203,47 +177,21 @@ public class GroupThread extends Thread {
 					}
 					else
 					{
-						if(message.getObjContents().get(0) == null)
+						String username = (String) message.getObjContents().get(0);
+						String groupname = (String) message.getObjContents().get(1);
+						UserToken yourToken = (UserToken) message.getObjContents().get(2);
+						
+						boolean success = deleteUserFromGroup(username,groupname,yourToken);
+						if(success)
 						{
-							response = new Envelope("FAIL-BADUSERNAME");
-						}
-						if(message.getObjContents().get(1) == null)
-						{
-							response = new Envelope("FAIL-BADGROUPNAME");
-						}
-						if(message.getObjContents().get(2) == null)
-						{
-							response = new Envelope("FAIL-BADTOKEN");
+							response = new Envelope("OK");
 						}
 						else
 						{
-							String username = (String) message.getObjContents().get(0);
-							String groupname = (String) message.getObjContents().get(1);
-							UserToken yourToken = (UserToken) message.getObjContents().get(2);
-							
-							//check group ownership
-							ArrayList<String> groupOwners = my_gs.groupList.getGroupOwnership(groupname);
-							String adder = yourToken.getSubject();
-							boolean check = false;
-							for(String owner: groupOwners)
-							{
-								if(owner == adder)
-									check = true;
-							}
-							//if not owner send back error
-							if(!check)
-							{
-								response = new Envelope("FAIL-NOTGROUPOWNER");
-							}
-							//add member and send back OK
-							else
-							{
-								my_gs.groupList.removeMember(groupname, username);
-								response = new Envelope("OK");
-								output.writeObject(response);
-								System.out.println("RUSERTOGROUP response: " + response.getMessage());
-							}
+							response = new Envelope("FAIL");
 						}
+						output.writeObject(response);
+						System.out.println("RUSERTOGROUP response: " + response.getMessage());
 					}
 				} else if (message.getMessage().equals("DISCONNECT")) // Client wants to disconnect
 				{
@@ -259,6 +207,87 @@ public class GroupThread extends Thread {
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage() + "\n\n" + e.toString());
 			e.printStackTrace(System.err);
+		}
+	}
+	
+	private boolean addUserToGroup (String username, String groupname, UserToken yourToken)
+	{
+		String requester = yourToken.getSubject();
+		//check requester exists
+		if(my_gs.userList.checkUser(requester))
+		{
+			//check group exists
+			if (my_gs.groupList.checkGroup(groupname))
+			{
+				//check group ownership
+				ArrayList<String> groupOwners = my_gs.groupList.getGroupOwnership(groupname);
+				boolean check = false;
+				for(String owner: groupOwners)
+				{
+					if(owner == requester)
+						check = true;
+				}
+				//if not owner send back error
+				if(check)
+				{
+					my_gs.groupList.addMember(groupname, username);
+					return true;
+				}
+				//add member and send back OK
+				else
+				{
+					return false; //not group owner
+				}
+			}
+			else
+			{
+				return false; //group doesn't exist
+			}
+		}
+		else
+		{
+			return false; //user doesn't exist
+		}
+	}
+	
+	
+	private boolean deleteUserFromGroup (String username, String groupname, UserToken yourToken)
+	{
+		String requester = yourToken.getSubject();
+		//check requester exists
+		if(my_gs.userList.checkUser(requester))
+		{
+			//check group exists
+			if (my_gs.groupList.checkGroup(groupname))
+			{
+				//check group ownership
+				ArrayList<String> groupOwners = my_gs.groupList.getGroupOwnership(groupname);
+				boolean check = false;
+				for(String owner: groupOwners)
+				{
+					if(owner == requester)
+						check = true;
+				}
+				//if not owner send back error
+				if(check)
+				{
+					my_gs.groupList.removeMember(groupname, username);
+					return true;
+				}
+				//add member and send back OK
+				else
+				{
+					return false; //not group owner
+				}
+			}
+			else
+			{
+				return false; //group doesn't exist
+			}
+		}
+		else
+		{
+			return false; //user doesn't exist
 		}
 	}
 
